@@ -1,5 +1,5 @@
 import React from 'react'
-import DataEntry from './DataEntry/DataEntry'
+import DataEntry from './Component/DataEntry/DataEntry'
 
 
 const App = () => {

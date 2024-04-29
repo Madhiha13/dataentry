@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios'; 
 
-// import "./../DataEntry_css/DataEntry.css"
-import "./../DataEntry_css/DataEntry.css"
 
-import {whitevariationSvg,FolderSvg,CircleSvg,Cart,GreenSvg,Co2,PiechartSvg,AddIcon,SearchSvg,UploadSvg,User,Leftarrow,Layer1,Layer2,Layer3} from "../assets";
+import {whitevariationSvg,FolderSvg,CircleSvg,Cart,GreenSvg,Co2,PiechartSvg,AddIcon,SearchSvg,UploadSvg,User,Leftarrow,Layer1,Layer2,Layer3} from "./../../assets";
 const DataEntry = () => {
 
         const [file, setFile] = useState(null);
         const [rowCount, setRowCount] = useState(0); 
         const [selectedYear, setSelectedYear] = useState(''); 
         const [selectedMonth, setSelectedMonth] = useState(''); 
+        const [selectedFacilityCode, setSelectedFacilityCode] = useState('');
+        const [selectedFacilityName, setSelectedFacilityName] = useState('');
+        const [facilityCodes] = useState(['001', '002', '003', '004', '005']);
+        const [facilityNames] = useState(['Mobile Combustion', 'Facility 2', 'Facility 3', 'Facility 4', 'Facility 5']);
         const yearRanges = [
             '2022-2023',
             '2021-2022',
@@ -20,6 +22,22 @@ const DataEntry = () => {
              '2017-2018',
     
           ];
+
+          const handleFacilityCodeChange = (e) => {
+            const code = e.target.value;
+            setSelectedFacilityCode(code);
+            const index = facilityCodes.indexOf(code);
+            setSelectedFacilityName(facilityNames[index]);
+          };
+
+
+          const handleFacilityNameChange = (e) => {
+            const code = e.target.value;
+            setSelectedFacilityName(code);
+            const index = facilityNames.indexOf(code);
+            setSelectedFacilityName(facilityNames[index]);
+          };
+
           const MonthValue=['january','february','march','april','may','june','july','august','september','october','november','december']
           const handleYearChange = (event) => {
             setSelectedYear(event.target.value);
@@ -233,9 +251,25 @@ const DataEntry = () => {
                         </select></div>
       <div className="type-of-vehicle2">Type of Vehicle</div>
       
-      <input className="mobile-combustion-data-entry-child8" type="text" placeholder="    Facility Code"/>
+      {/* <input className="mobile-combustion-data-entry-child8" type="text" placeholder="    Facility Code"/>
       
-      <input className="mobile-combustion-data-entry-child9" type="text" placeholder="    Facility Name"/>
+      <input className="mobile-combustion-data-entry-child9" type="text" placeholder="    Facility Name"/> */}
+      <select className="mobile-combustion-data-entry-child8" value={selectedFacilityCode} onChange={handleFacilityCodeChange}>
+          <option value="">Facility Code</option>
+          {facilityCodes.map((code) => (
+            <option key={code} value={code}>
+              {code}
+            </option>
+          ))}
+        </select>
+        <select className="mobile-combustion-data-entry-child9" value={selectedFacilityName} onChange={handleFacilityNameChange}>
+          <option value="">Facility Name</option>
+          {facilityNames.map((code) => (
+            <option key={code} value={code}>
+              {code}
+            </option>
+          ))}
+        </select>
       <div className="facility1">{`Facility `}</div>
       <div className="fuel1">Fuel</div>
       <div className="quantity2">Quantity</div>

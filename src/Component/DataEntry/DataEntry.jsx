@@ -1,178 +1,171 @@
 import React, { useState } from 'react';
 import axios from 'axios'; 
+import { whitevariationSvg, FolderSvg, CircleSvg, Cart, GreenSvg, Co2, PiechartSvg, AddIcon, SearchSvg, UploadSvg, User, Leftarrow, Layer1, Layer2, Layer3 } from "./../../assets";
 
-
-import {whitevariationSvg,FolderSvg,CircleSvg,Cart,GreenSvg,Co2,PiechartSvg,AddIcon,SearchSvg,UploadSvg,User,Leftarrow,Layer1,Layer2,Layer3} from "./../../assets";
 const DataEntry = () => {
+    const [formData, setFormData] = useState({
+        year: '',
+        month: '',
+        facilityCode: '',
+        facilityName: '',
+    });
 
-        const [file, setFile] = useState(null);
-        const [rowCount, setRowCount] = useState(0); 
-        const [selectedYear, setSelectedYear] = useState(''); 
-        const [selectedMonth, setSelectedMonth] = useState(''); 
-        const [selectedFacilityCode, setSelectedFacilityCode] = useState('');
-        const [selectedFacilityName, setSelectedFacilityName] = useState('');
-        const [facilityCodes] = useState(['001', '002', '003', '004', '005']);
-        const [facilityNames] = useState(['Mobile Combustion', 'Facility 2', 'Facility 3', 'Facility 4', 'Facility 5']);
-        const yearRanges = [
-            '2022-2023',
-            '2021-2022',
-            '2020-2021',
-            '2019-2020',
-            '2018-2019',
-             '2017-2018',
+    // Unused variables suppressed with eslint-disable-next-line
     
-          ];
+    // const [rowCount, setRowCount] = useState(0); // eslint-disable-next-line
+    // const [selectedYear, setSelectedYear] = useState(''); // eslint-disable-next-line
+    // const [selectedMonth, setSelectedMonth] = useState(''); // eslint-disable-next-line
+    // const [selectedFacilityCode, setSelectedFacilityCode] = useState(''); // eslint-disable-next-line
+    // const [selectedFacilityName, setSelectedFacilityName] = useState(''); // eslint-disable-next-line
 
-          const handleFacilityCodeChange = (e) => {
-            const code = e.target.value;
-            setSelectedFacilityCode(code);
-            const index = facilityCodes.indexOf(code);
-            setSelectedFacilityName(facilityNames[index]);
-          };
+    const [rows, setRows] = useState([
+        { vehicleType: '', fuelType: '', quantity: '', siUnits: '', distance: '', file: null ,fileUrl :''},
+        { vehicleType: '', fuelType: '', quantity: '', siUnits: '', distance: '', file: null,fileUrl : '' }
+    ]);
 
+    const [facilityCodes] = useState(['001', '002', '003', '004', '005']);
+    const [facilityNames] = useState(['Mobile Combustion', 'Facility 2', 'Facility 3', 'Facility 4', 'Facility 5']);
 
-          const handleFacilityNameChange = (e) => {
-            const code = e.target.value;
-            setSelectedFacilityName(code);
-            const index = facilityNames.indexOf(code);
-            setSelectedFacilityName(facilityNames[index]);
-          };
+    const yearRanges = [
+        '2022-2023',
+        '2021-2022',
+        '2020-2021',
+        '2019-2020',
+        '2018-2019',
+        '2017-2018',
+    ];
 
-          const MonthValue=['january','february','march','april','may','june','july','august','september','october','november','december']
-          const handleYearChange = (event) => {
-            setSelectedYear(event.target.value);
-            // Add logic here to handle the selected year
-          };
-          const handleMonthChange = (event) => {
-            setSelectedMonth(event.target.value);
-            // Add logic here to handle the selected year
-          };
-        const addRow = () => {
-            setRowCount((prevCount) => prevCount + 1); // Increment row count
-          };
-        
-          const renderDynamicRows = () => {
-            let rows = [
-              <div className='row-bar' key={0}>
-            <div className="data-row">
-                {/* Define your row content here */}
-                <input type="text" placeholder="Type of Vehicle" className="mobile-combustion-data-entry-child1-vehicle" />
-                <input className="mobile-combustion-data-entry-child2-fuel" type="text" placeholder="Type of Fuel" />
-                <input className="mobile-combustion-data-entry-child3-quantity" type="text" placeholder="Quantity" />
-                <input className="mobile-combustion-data-entry-child4-si" type="text" placeholder="SI Units" />
-                <input className="mobile-combustion-data-entry-child5-distance" type="text" placeholder="Distance in KM" />
+    const handleFacilityCodeChange = (e) => {
+      const code = e.target.value;
+      const index = facilityCodes.indexOf(code);
+      const facilityName = facilityNames[index];
+      setFormData(prevData => ({
+          ...prevData,
+          facilityCode: code,
+          facilityName: facilityName
+      }));
+  };
+  
 
-                <div className='mobile-combustion-data-entry-child18-new'>
-                    <img className="file-2-1-icon" alt="" src={UploadSvg} />
-                    {/* Custom label for file input */}
-                    <label htmlFor={`file-upload-input-0`} className="file-upload-input" style={{ width: '' }}>
-                        Upload File
-                    </label>
-                    {/* Hidden file input */}
-                    <input
-                        id={`file-upload-input-0`}
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                        onClick={handleUpload}
-                    />
-                </div>
-            </div>
-        </div>,
-        // Initial row 2
-        <div className='row-bar' key={1}>
-            <div className="data-row">
-                {/* Define your row content here */}
-                <input type="text" placeholder="Type of Vehicle" className="mobile-combustion-data-entry-child1-vehicle" />
-                <input className="mobile-combustion-data-entry-child2-fuel" type="text" placeholder="Type of Fuel" />
-                <input className="mobile-combustion-data-entry-child3-quantity" type="text" placeholder="Quantity" />
-                <input className="mobile-combustion-data-entry-child4-si" type="text" placeholder="SI Units" />
-                <input className="mobile-combustion-data-entry-child5-distance" type="text" placeholder="Distance in KM" />
+    // Other event handler functions...
+    const handleFacilityNameChange = (e) => {
+      const name = e.target.value;
+      const index = facilityNames.indexOf(name);
+      const facilityCode = facilityCodes[index];
+      setFormData(prevData => ({
+          ...prevData,
+          facilityName: name,
+          facilityCode: facilityCode
+      }));
+  };
+  
+      const MonthValue=['january','february','march','april','may','june','july','august','september','october','november','december']
+      const handleYearChange = (event) => {
+        const yearValue = event.target.value;
+        setFormData(prevData => ({
+            ...prevData,
+            year: yearValue
+        }));
+    };
+    
+    const handleMonthChange = (event) => {
+      const monthValue = event.target.value;
+      setFormData(prevData => ({
+          ...prevData,
+          month: monthValue
+      }));
+  };
+  const rowCount = rows.length;
 
-                <div className='mobile-combustion-data-entry-child18-new'>
-                    <img className="file-2-1-icon" alt="" src={UploadSvg} />
-                    {/* Custom label for file input */}
-                    <label htmlFor={`file-upload-input-1`} className="file-upload-input" style={{ width: '' }}>
-                        Upload File
-                    </label>
-                    {/* Hidden file input */}
-                    <input
-                        id={`file-upload-input-1`}
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                        onClick={handleUpload}
-                    />
-                </div>
-            </div>
-        </div>
-            ];
-            for (let i = 0; i < rowCount; i++) {
-              rows.push(
-                <div className='row-bar'>
-                <div key={i+2} className="data-row">
-                  {/* Define your row content here */}
-                  <input type="text" placeholder="Type of Vehicle" className="mobile-combustion-data-entry-child1-vehicle" />
-                  <input className="mobile-combustion-data-entry-child2-fuel" type="text" placeholder="Type of Fuel"/>
-                  <input className="mobile-combustion-data-entry-child3-quantity" type="text" placeholder="Quantity"/>
-                  <input className="mobile-combustion-data-entry-child4-si" type="text" placeholder="SI Units"/>
-                  <input className="mobile-combustion-data-entry-child5-distance" type="text" placeholder="Distance in KM"/>
-                
-                  <div className='mobile-combustion-data-entry-child18-new'>
-                    <img className="file-2-1-icon" alt="" src={UploadSvg}/>
-                      {/* Custom label for file input */}
-                      <label htmlFor="file-upload-input" className="file-upload-input" style={{width:''}}>
-                      
-                      Upload File
-                      </label>
-                      {/* <img className="file-2-1-icon" alt="" src={UploadSvg}/> */}
-                      {/* Hidden file input */}
-                      <input
-                        id="file-upload-input"
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                        onClick={handleUpload}
-                      />
       
-                   </div>
-
-
-                </div>
-                </div>
-              );
-            }
-            return rows;
-          };
-        
-        const handleFileChange = (e) => {
-          setFile(e.target.files[0]); // Set selected file
-        };
+      const handleInputChange = (index, key, value) => {
+          const newRows = [...rows];
+          newRows[index][key] = value;
+          setRows(newRows);
+      };
       
-        const handleUpload = async () => {
-          if (file) {
-            try {
+      const handleFileChange = (index, file) => {
+        const newRows = [...rows];
+        newRows[index].file = file;
+        newRows[index].fileName = file.name;
+        setRows(newRows);
+    };
+    const handleUpload = async (index) => {
+      const rowData = rows[index];
+      const data = {
+          ...formData,
+          ...rowData
+      };
+  
+      try {
+          // Upload file if selected
+          if (rowData.file) {
               const formData = new FormData();
-              formData.append('file', file);
-      
+              formData.append('file', rowData.file);
+              formData.append('fileName', rowData.file.name);
+  
+              // Upload file and get the fileUrl
               const response = await axios.post('http://localhost:5000/upload', formData);
-      
               if (response.status === 200) {
-                console.log('File uploaded successfully!');
+                  const { fileUrl } = response.data;
+                  data.fileUrl = fileUrl;
+  
+                  // Update the fileUrl in rows
+                  const updatedRows = [...rows];
+                  updatedRows[index].fileUrl = fileUrl;
+                  setRows(updatedRows);
+  
+                  // Submit data entry with fileUrl
+                  await axios.post('http://localhost:5000/dataentry', data);
+                  console.log('Data entry submitted successfully for row', index);
               }
-            } catch (error) {
-              console.error('Error uploading file:', error);
-            }
           } else {
-            console.error('No file selected.');
+              // Submit data entry without fileUrl
+              await axios.post('http://localhost:5000/dataentry', data);
+              console.log('Data entry submitted successfully for row', index);
           }
-        };
+      } catch (error) {
+          console.error('Error submitting data entry for row', index, ':', error);
+      }
+  };
+  
 
-  return (
-    <div className="mobile-combustion-data-entry">
+
+      const renderDynamicRows = () => {
+        return rows.map((rowData, index) => (
+            <div className='row-bar' key={index}>
+                <div className="data-row">
+                    <input type="text" placeholder="Type of Vehicle" className="mobile-combustion-data-entry-child1-vehicle" value={rowData.vehicleType} onChange={(e) => handleInputChange(index, 'vehicleType', e.target.value)} />
+                    <input className="mobile-combustion-data-entry-child2-fuel" type="text" placeholder="Type of Fuel" value={rowData.fuelType} onChange={(e) => handleInputChange(index, 'fuelType', e.target.value)} />
+                    <input className="mobile-combustion-data-entry-child3-quantity" type="text" placeholder="Quantity" value={rowData.quantity} onChange={(e) => handleInputChange(index, 'quantity', e.target.value)} />
+                    <input className="mobile-combustion-data-entry-child4-si" type="text" placeholder="SI Units" value={rowData.siUnits} onChange={(e) => handleInputChange(index, 'siUnits', e.target.value)} />
+                    <input className="mobile-combustion-data-entry-child5-distance" type="text" placeholder="Distance in KM" value={rowData.distance} onChange={(e) => handleInputChange(index, 'distance', e.target.value)} />
+                    <div className='mobile-combustion-data-entry-child18-new'>
+                        <img className="file-2-1-icon" alt="" src={UploadSvg} />
+                        <label htmlFor={`file-upload-input-${index}`} className="file-upload-input" style={{ width: '' }}>
+                            Upload File
+                        </label>
+                        <input id={`file-upload-input-${index}`} type="file" accept=".pdf,.doc,.docx" style={{ display: 'none' }} onChange={(e) => handleFileChange(index, e.target.files[0])} onClick={() => handleUpload(index)} />
+                        
+                    </div>
+                </div>
+            </div>
+        ));
+    };
+
+    const addRow = () => {
+        setRows([...rows, { vehicleType: '', fuelType: '', quantity: '', siUnits: '', distance: '' }]);
+    };
+
+    return (
+        <div className="mobile-combustion-data-entry">
+            {/* Form content
+            <buton className="mobile-combustion-data-entry-child12" onClick={addRow}>
+                <img className="add-6-icon" alt="" src={AddIcon}/>
+                <b className="add-data">ADD DATA</b>
+            </buton>
+        </div> */}
+        <form onSubmit={handleUpload}>
       <div className="mobile-combustion-data-entry-child" />
       <img
         className="white-variation-11"
@@ -204,7 +197,7 @@ const DataEntry = () => {
           <div className="menu-label2">
             <div className="menu-label3">
             <select
-                             value={selectedYear}
+                             value={formData.selectedYear}
                              onChange={handleYearChange}
                               className="year-dropdown header1"
                             >
@@ -238,7 +231,7 @@ const DataEntry = () => {
       <div className="mobile-combustion-data-entry-child6" />
       <div className="">
       <select
-                             value={selectedMonth}
+                             value={formData.selectedMonth}
                              onChange={handleMonthChange}
                               className="month-dropdown mobile-combustion-data-entry-child6"
                             >
@@ -254,7 +247,7 @@ const DataEntry = () => {
       {/* <input className="mobile-combustion-data-entry-child8" type="text" placeholder="    Facility Code"/>
       
       <input className="mobile-combustion-data-entry-child9" type="text" placeholder="    Facility Name"/> */}
-      <select className="mobile-combustion-data-entry-child8" value={selectedFacilityCode} onChange={handleFacilityCodeChange}>
+      <select className="mobile-combustion-data-entry-child8" value={formData.selectedFacilityCode} onChange={handleFacilityCodeChange}>
           <option value="">Facility Code</option>
           {facilityCodes.map((code) => (
             <option key={code} value={code}>
@@ -262,7 +255,7 @@ const DataEntry = () => {
             </option>
           ))}
         </select>
-        <select className="mobile-combustion-data-entry-child9" value={selectedFacilityName} onChange={handleFacilityNameChange}>
+        <select className="mobile-combustion-data-entry-child9" value={formData.selectedFacilityName} onChange={handleFacilityNameChange}>
           <option value="">Facility Name</option>
           {facilityNames.map((code) => (
             <option key={code} value={code}>
@@ -314,9 +307,9 @@ const DataEntry = () => {
         <img className="add-6-icon" alt="" src={AddIcon}/>
         <b className="add-data">ADD DATA</b>
       </buton>
-
+    </form>
     </div>
-  );
+    );
 };
 
 export default DataEntry;
